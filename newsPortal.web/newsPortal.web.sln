@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "newsPortal", "newsPortal\newsPortal.csproj", "{AEC63161-046D-41EE-A621-600E976C324E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "newsPortal", "newsPortal\newsPortal.csproj", "{AEC63161-046D-41EE-A621-600E976C324E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "newPortal.Test", "newPortal.Test\newPortal.Test.csproj", "{236B0D55-6EB4-47D6-8FA7-C9E5272AC2D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{AEC63161-046D-41EE-A621-600E976C324E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEC63161-046D-41EE-A621-600E976C324E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEC63161-046D-41EE-A621-600E976C324E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{236B0D55-6EB4-47D6-8FA7-C9E5272AC2D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{236B0D55-6EB4-47D6-8FA7-C9E5272AC2D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{236B0D55-6EB4-47D6-8FA7-C9E5272AC2D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{236B0D55-6EB4-47D6-8FA7-C9E5272AC2D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,6 @@
-﻿using newsPortal.Dtos;
+﻿using newsPortal.Common;
+using newsPortal.Dtos;
+using newsPortal.Extensions;
 using newsPortal.Models;
 using newsPortal.Repositories.Interfaces;
 using newsPortal.Services.Interfaces;
@@ -7,51 +9,61 @@ namespace newsPortal.Services
 {
     public class StoryService : IStoryService
     {
-        private readonly INewsService _storyRepository;
-        public StoryService(INewsService storyRepository)
+        private readonly INewsService _newService;
+        public StoryService(INewsService newService)
         {
-            _storyRepository = storyRepository;
+            _newService = newService;
         }
-        public async Task<GetStoriesResponseDto> getStories(int pageNumber, int pageSize)
+        public async Task<GetStoriesResponseDto> GetStories(GetStoriesRequestDto options)
         {
-            var storyIdsCollection = await _storyRepository.GetNewStoriesId();
-            var paginatedStoryIdCollection = storyIdsCollection.Skip(getStartIndexByPage(pageNumber, pageSize, storyIdsCollection.Count())).Take(getItemsToTakeByPage(pageNumber, pageSize, storyIdsCollection.Count()));
-            var getStoryTasks = paginatedStoryIdCollection.Select(storyId => _storyRepository.Find(storyId));
+            var getStoryIdsTask = options.Criteria.StoryType is null ? GetAllStoriesId() : _newService.GetStoriesIdByType(options.Criteria.StoryType);
+            IEnumerable<int> storyIdsCollection = await getStoryIdsTask;
+
+            if (options.Criteria.Title is not null)
+            {
+                return await getAndfilteredStories(options, storyIdsCollection);
+            }
+            else
+            {
+                return await getAllStories(options, storyIdsCollection);
+            }
+        }
+        private async Task<GetStoriesResponseDto> getAndfilteredStories(GetStoriesRequestDto options,IEnumerable<int> StoryIds)
+        {
+            var getStoryTasks = StoryIds.Select(_newService.Find);
+            var storiesCollection = await Task.WhenAll(getStoryTasks);
+            var filteredCollection = storiesCollection.Where(story => story.Title.ToLower().Contains(options.Criteria.Title.ToLower()));
+            var paginatedfilteredCollection = filteredCollection.GetPaginatedItems(options.Page, options.PageSize);
+            return new GetStoriesResponseDto()
+            {
+                countTotal = filteredCollection.Count(),
+                PrevPage = options.Page == 1 ? null : options.Page - 1,
+                NextPage = filteredCollection.IsLastPage(options.Page, options.PageSize) ? null : options.Page + 1,
+                Results = paginatedfilteredCollection
+            };
+        }
+        
+        private async Task<GetStoriesResponseDto> getAllStories(GetStoriesRequestDto options, IEnumerable<int> StoryIds)
+        {
+            var paginatedStoryIdCollection = StoryIds.GetPaginatedItems(options.Page, options.PageSize);
+            var getStoryTasks = paginatedStoryIdCollection.Select(_newService.Find);
             var storiesCollection = await Task.WhenAll(getStoryTasks);
             return new GetStoriesResponseDto()
             {
-                countTotal = storyIdsCollection.Count(),
-                PrevPage = pageNumber == 1 ? 1: pageNumber -1,
-                NextPage = isLastPage(pageNumber, pageSize, storyIdsCollection.Count())? pageNumber : pageNumber + 1,
+                countTotal = StoryIds.Count(),
+                PrevPage = options.Page == 1 ? null : options.Page - 1,
+                NextPage = StoryIds.IsLastPage(options.Page, options.PageSize) ? null : options.Page + 1,
                 Results = storiesCollection
             };
         }
 
-        private int getStartIndexByPage(int pageNumber, int pageSize,int totalItems)
+        public async Task<IEnumerable<int>> GetAllStoriesId()
         {
-            var startIndex = (pageNumber - 1) * pageSize - 1;
-            if (startIndex > totalItems -1)
-            {
-                throw new ArgumentException("PageNumber is out of list range");
-            }
-            return startIndex;
-
-        }
-        private int getItemsToTakeByPage(int pageNumber, int pageSize, int totalItems)
-        {
-            var startIndex = getStartIndexByPage(pageNumber, pageSize, totalItems);
-            var itemsToTake = pageSize;
-            if ((startIndex + itemsToTake) > totalItems)
-            {
-                itemsToTake = totalItems - startIndex;
-            }
-            return itemsToTake;
-        }
-
-        private bool isLastPage(int pageNumber, int pageSize, int totalItems)
-        {
-            var startIndex = getStartIndexByPage(pageNumber, pageSize, totalItems);
-            return (startIndex + pageSize) > totalItems;
+            string[] allStoryTypes = { Constants.NewStory, Constants.TopStory, Constants.BestStory };
+            var getStoriesTasks = allStoryTypes.Select(_newService.GetStoriesIdByType);
+            IEnumerable<IEnumerable<int>> response = await Task.WhenAll(getStoriesTasks);
+            IEnumerable<int> storyIdList = response.SelectMany(id => id);
+            return storyIdList;
         }
     }
 }

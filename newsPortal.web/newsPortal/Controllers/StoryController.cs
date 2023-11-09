@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using newsPortal.Dtos;
 using newsPortal.Services.Interfaces;
 
@@ -14,11 +13,15 @@ namespace newsPortal.Controllers
         {
             _storyService = storyService;
         }
-        [HttpGet(Name = "Story")]
-        public async Task<GetStoriesResponseDto> Get(int page = 1)
+        [HttpPost(Name = "story")]
+        public async Task<ActionResult<GetStoriesResponseDto>> GetStories([FromBody] GetStoriesRequestDto requestParams)
         {
-            var response = await _storyService.getStories(page, 5);
-            return response;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var response = await _storyService.GetStories(requestParams);
+            return Ok(response);
         }
     }
 }

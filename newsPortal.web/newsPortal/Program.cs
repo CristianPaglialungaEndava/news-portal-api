@@ -1,5 +1,7 @@
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
+using newsPortal.Infrastructure;
 using newsPortal.Repositories;
 using newsPortal.Repositories.Interfaces;
 using newsPortal.Services;
@@ -15,14 +17,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Inject Dependencies
-
+builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IStoryService, StoryService>();
-builder.Services.AddScoped<INewsService, HackNewService>();
+builder.Services.AddScoped<HackNewService>();
+builder.Services.AddScoped<INewsService, CachingHackNewService>();
 // Configure HttpClient 
 builder.Services.AddHttpClient("HackNews", (httpClient) =>
 {
-    var baseUrl = "https://hacker-news.firebaseio.com/v0/";//builder.Configuration.GetValue<string>("BaseUrls:HackNews") ?? string.Empty;
-
+    var baseUrl = builder.Configuration["BaseUrls:HackNews"];
     httpClient.BaseAddress = new Uri(baseUrl);
 });
 

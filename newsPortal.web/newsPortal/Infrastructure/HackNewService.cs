@@ -1,4 +1,5 @@
-﻿using newsPortal.Models;
+﻿using newsPortal.Common;
+using newsPortal.Models;
 using newsPortal.Repositories.Interfaces;
 
 namespace newsPortal.Repositories
@@ -17,17 +18,10 @@ namespace newsPortal.Repositories
             return response;
         }
 
-        public async Task<IEnumerable<int>?> GetNewStoriesId()
+        public async Task<IEnumerable<int>> GetStoriesIdByType(string storyType)
         {
             var httpClient = _factory.CreateClient("HackNews");
-            var response = await httpClient.GetFromJsonAsync<List<int>>($"newstories.json?print=pretty");
-            return response;
-        }
-
-        public async Task<IEnumerable<int>?> GetTopStoriesId()
-        {
-            var httpClient = _factory.CreateClient("HackNews");
-            var response = await httpClient.GetFromJsonAsync<List<int>>($"topstories.json?print=pretty");
+            var response = await httpClient.GetFromJsonAsync<List<int>>($"{storyType.ToLower()}stories.json?print=pretty");
             return response;
         }
     }
