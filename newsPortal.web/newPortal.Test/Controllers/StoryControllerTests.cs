@@ -21,7 +21,7 @@ namespace newPortal.Test.Controllers
                 countTotal = 1,
                 NextPage = 2,
                 PrevPage = null,
-                Results = new List<Story>()
+                Results = new List<StoryDto>()
             };
             storyServiceMock.Setup(x => x.GetStories(It.IsAny<GetStoriesRequestDto>())).ReturnsAsync(mStoryResponse);
             var controller = new StoryController(storyServiceMock.Object);

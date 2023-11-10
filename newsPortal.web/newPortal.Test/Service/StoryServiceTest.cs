@@ -18,11 +18,20 @@ namespace newPortal.Test.Services
 
             var storyIds = new List<int> { 1, 2, 3 };
             newsServiceMock.Setup(x => x.GetStoriesIdByType(It.IsAny<string>())).ReturnsAsync(storyIds);
-
+            var story1 = new Story { Title = "TestTitle1" };
+            var story2 = new Story { Title = "TestTitle2" };
+            var story3 = new Story { Title = "OtherTitle" };
             newsServiceMock.Setup(x => x.Find(It.IsAny<int>())).ReturnsAsync((int id) =>
             {
-                return new Story { Title = $"TestTitle{id}" };
+                switch (id)
+                {
+                    case 1: return story1;
+                    case 2: return story2;
+                    case 3: return story3;
+                    default: return null;
+                }
             });
+
             var storyService = new StoryService(newsServiceMock.Object);
 
             var options = new GetStoriesRequestDto
@@ -69,17 +78,11 @@ namespace newPortal.Test.Services
             var story2 = new Story { Title = "TestTitle2" };
             var story3 = new Story { Title = "OtherTitle" };
 
+
             newsServiceMock.Setup(x => x.Find(It.IsAny<int>())).ReturnsAsync((int id) =>
             {
-                switch (id)
-                {
-                    case 1: return story1;
-                    case 2: return story2;
-                    case 3: return story3;
-                    default: return null;
-                }
+                return new Story { Title = $"TestTitle{id}" };
             });
-
             // Act
             var result = await storyService.GetStories(options);
 

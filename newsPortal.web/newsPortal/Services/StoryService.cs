@@ -40,7 +40,7 @@ namespace newsPortal.Services
                 countTotal = filteredCollection.Count(),
                 PrevPage = options.Page == 1 ? null : options.Page - 1,
                 NextPage = filteredCollection.IsLastPage(options.Page, options.PageSize) ? null : options.Page + 1,
-                Results = paginatedfilteredCollection
+                Results = paginatedfilteredCollection.Select(story => new StoryDto(story))
             };
         }
         
@@ -54,7 +54,7 @@ namespace newsPortal.Services
                 countTotal = StoryIds.Count(),
                 PrevPage = options.Page == 1 ? null : options.Page - 1,
                 NextPage = StoryIds.IsLastPage(options.Page, options.PageSize) ? null : options.Page + 1,
-                Results = storiesCollection
+                Results = storiesCollection.Select(story => new StoryDto(story))
             };
         }
 

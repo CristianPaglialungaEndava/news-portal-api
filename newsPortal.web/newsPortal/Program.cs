@@ -27,6 +27,16 @@ builder.Services.AddHttpClient("HackNews", (httpClient) =>
     var baseUrl = builder.Configuration["BaseUrls:HackNews"];
     httpClient.BaseAddress = new Uri(baseUrl);
 });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowAll",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                 .AllowAnyMethod()
+                                 .AllowAnyHeader();
+                      });
+});
 
 var app = builder.Build();
 
@@ -41,6 +51,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseCors("AllowAll");
 app.MapControllers();
 
 app.Run();
