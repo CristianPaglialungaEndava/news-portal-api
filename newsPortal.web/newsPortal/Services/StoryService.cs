@@ -4,6 +4,7 @@ using newsPortal.Extensions;
 using newsPortal.Models;
 using newsPortal.Repositories.Interfaces;
 using newsPortal.Services.Interfaces;
+using System.Collections.Generic;
 
 namespace newsPortal.Services
 {
@@ -57,12 +58,12 @@ namespace newsPortal.Services
             };
         }
 
-        public async Task<IEnumerable<int>> GetAllStoriesId()
+        private async Task<IEnumerable<int>> GetAllStoriesId()
         {
             string[] allStoryTypes = { Constants.NewStory, Constants.TopStory, Constants.BestStory };
             var getStoriesTasks = allStoryTypes.Select(_newService.GetStoriesIdByType);
             IEnumerable<IEnumerable<int>> response = await Task.WhenAll(getStoriesTasks);
-            IEnumerable<int> storyIdList = response.SelectMany(id => id);
+            IEnumerable<int> storyIdList = response.SelectMany(id => id).Distinct();
             return storyIdList;
         }
     }

@@ -22,4 +22,8 @@
     <ProjectReference Include="..\newsPortal\newsPortal.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
+  </ItemGroup>
+
 </Project>
