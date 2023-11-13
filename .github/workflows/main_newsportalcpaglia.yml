@@ -23,7 +23,7 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: cd ./newsPortal.web/ | dotnet build --configuration Release
+        run: dotnet build .\newsPortal.web\newsPortal.web.sln --configuration Release
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ./newsPortal.web/myapp
@@ -52,6 +52,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'newsPortalCpaglia'
-          slot-name: 'Production'
+          slot-name: 'Dev'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_06E1AEB9FA964F3E8A4E5F385E64972F }}
           package: .
