@@ -23,16 +23,16 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build .\newsPortal.web\newsPortal.web.sln --configuration Release
+        run: dotnet build .\newsPortal.web\newsPortal\newsPortal.csproj --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish .\newsPortal.web\newsPortal.web.sln -c Release -o ./newsPortal.web/myapp
+        run: dotnet publish .\newsPortal.web\newsPortal\newsPortal.csproj -c Release -o ./myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
-          path: ./newsPortal.web/myapp
+          path: ./myapp
 
   deploy:
     runs-on: windows-latest
