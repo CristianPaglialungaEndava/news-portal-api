@@ -52,6 +52,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'newsPortalCpaglia'
-          slot-name: 'Dev'
+          slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_06E1AEB9FA964F3E8A4E5F385E64972F }}
           package: .
