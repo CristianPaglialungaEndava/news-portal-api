@@ -26,7 +26,7 @@ jobs:
         run: dotnet build .\newsPortal.web\newsPortal.web.sln --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ./newsPortal.web/myapp
+        run: dotnet publish .\newsPortal.web\newsPortal.web.sln -c Release -o ./newsPortal.web/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
